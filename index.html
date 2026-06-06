@@ -8,13 +8,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh;display:flex;overflow:hidden}
-.sidebar{width:240px;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);display:flex;flex-direction:column;flex-shrink:0;min-height:100vh;border-right:1px solid rgba(255,255,255,0.06)}
+body{font-family:'Inter',system-ui,sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── Top navbar (mobile) ── */
+.topnav{display:none;background:#1a1a2e;border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topnav h1{font-size:15px;font-weight:700;color:#fff}
+.topnav p{font-size:10px;color:#6366f1}
+.hamburger{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:4px}
+
+/* ── Layout ── */
+.layout{display:flex;flex:1;overflow:hidden;height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{width:240px;background:linear-gradient(180deg,#1a1a2e,#16213e);display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.06);transition:transform 0.3s ease;z-index:40}
 .logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.07)}
 .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
-.logo h1{font-size:15px;font-weight:700;color:#fff;letter-spacing:0.2px}
-.logo p{font-size:11px;color:#6366f1;margin-top:2px;font-weight:500}
-.nav{padding:16px 12px;flex:1}
+.logo h1{font-size:15px;font-weight:700;color:#fff}
+.logo p{font-size:11px;color:#6366f1;margin-top:2px}
+.nav{padding:16px 12px;flex:1;overflow-y:auto}
 .nav-label{font-size:10px;color:rgba(255,255,255,0.3);font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin:10px 0 6px}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.55);transition:all 0.2s;margin-bottom:2px;font-weight:500}
 .nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9)}
@@ -22,258 +33,339 @@ body{font-family:'Inter',system-ui,sans-serif;background:#0f0e17;color:#fffffe;m
 .nav-item i{font-size:17px;width:20px}
 .sidebar-footer{padding:14px 12px;border-top:1px solid rgba(255,255,255,0.07)}
 .sidebar-footer p{font-size:11px;color:rgba(255,255,255,0.25);text-align:center}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0f0e17}
-.topbar{background:rgba(26,26,46,0.8);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.topbar-left h2{font-size:18px;font-weight:700;color:#fff}
-.topbar-left p{font-size:12px;color:rgba(255,255,255,0.4);margin-top:1px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.topbar-badge{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#a78bfa;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500}
-.content{padding:24px 28px;flex:1;overflow-y:auto}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s}
-.stat-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.12)}
-.stat-card .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:18px}
+
+/* Overlay for mobile sidebar */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:39}
+.overlay.show{display:block}
+
+/* ── Main ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:rgba(26,26,46,0.9);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-left h2{font-size:17px;font-weight:700;color:#fff}
+.topbar-left p{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-badge{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#a78bfa;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.content{padding:20px;flex:1;overflow-y:auto}
+
+/* ── Stats grid ── */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;transition:transform 0.2s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px}
 .ic1{background:rgba(124,58,237,0.15);color:#a78bfa}
 .ic2{background:rgba(16,185,129,0.15);color:#6ee7b7}
 .ic3{background:rgba(245,158,11,0.15);color:#fcd34d}
 .ic4{background:rgba(6,182,212,0.15);color:#67e8f9}
-.stat-card .value{font-size:28px;font-weight:700;color:#fff;line-height:1}
-.stat-card .label{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;font-weight:500}
-.stat-card .change{font-size:11px;margin-top:8px;padding:3px 8px;border-radius:20px;display:inline-block}
+.stat-card .value{font-size:24px;font-weight:700;color:#fff;line-height:1}
+.stat-card .label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px}
+.stat-card .change{font-size:10px;margin-top:6px;padding:2px 7px;border-radius:20px;display:inline-block}
 .ch-up{background:rgba(16,185,129,0.12);color:#6ee7b7}
 .ch-dn{background:rgba(239,68,68,0.12);color:#fca5a5}
-.card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;margin-bottom:18px}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+
+/* ── Cards ── */
+.card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;margin-bottom:16px}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px;flex-wrap:wrap}
 .card-header h3{font-size:14px;font-weight:600;color:#fff}
-.card-header .sub{font-size:12px;color:rgba(255,255,255,0.35);margin-top:2px}
-.btn{padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;font-family:'Inter',sans-serif}
-.btn:hover{transform:translateY(-1px)}
-.btn:active{transform:translateY(0)}
+.card-header .sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ── Buttons ── */
+.btn{padding:8px 14px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.btn:active{transform:scale(0.97)}
 .btn-primary{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 4px 15px rgba(124,58,237,0.3)}
 .btn-danger{background:rgba(239,68,68,0.12);color:#fca5a5;border:1px solid rgba(239,68,68,0.2)}
 .btn-success{background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2)}
 .btn-warning{background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.2)}
 .btn-ghost{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1)}
-.btn-sm{padding:5px 11px;font-size:12px;border-radius:8px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 12px;color:rgba(255,255,255,0.35);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid rgba(255,255,255,0.06)}
-td{padding:12px 12px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;color:rgba(255,255,255,0.8)}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:8px}
+
+/* ── Table wrapper (horizontal scroll on mobile) ── */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
+th{text-align:left;padding:9px 10px;color:rgba(255,255,255,0.35);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;color:rgba(255,255,255,0.8)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,0.03)}
 .td-name{font-weight:600;color:#fff}
 .td-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .badge-purple{background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.2)}
 .badge-green{background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2)}
 .badge-red{background:rgba(239,68,68,0.12);color:#fca5a5;border:1px solid rgba(239,68,68,0.2)}
-.badge-yellow{background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.2)}
 .badge-blue{background:rgba(6,182,212,0.12);color:#67e8f9;border:1px solid rgba(6,182,212,0.2)}
-.search-wrap{position:relative}
+
+/* ── Search ── */
+.search-wrap{position:relative;width:100%}
 .search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.3);font-size:15px}
-.search-bar{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:8px 12px 8px 34px;font-size:13px;color:#fff;font-family:'Inter',sans-serif;outline:none;width:220px;transition:border-color 0.2s}
+.search-bar{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px 9px 34px;font-size:13px;color:#fff;font-family:'Inter',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
 .search-bar::placeholder{color:rgba(255,255,255,0.3)}
-.search-bar:focus{border-color:rgba(124,58,237,0.5);background:rgba(124,58,237,0.06)}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center}
+.search-bar:focus{border-color:rgba(124,58,237,0.5)}
+.search-row{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:100;align-items:flex-end;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal{background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,0.5)}
-.modal h3{font-size:17px;font-weight:700;color:#fff;margin-bottom:20px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:6px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase}
-.form-group input,.form-group select{width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:13px;color:#fff;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+.modal{background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,0.5)}
+.modal h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:18px}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 16px}
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:5px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase}
+.form-group input,.form-group select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:14px;color:#fff;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none}
 .form-group input::placeholder{color:rgba(255,255,255,0.25)}
 .form-group input:focus,.form-group select:focus{border-color:rgba(124,58,237,0.6);background:rgba(124,58,237,0.05)}
 .form-group select option{background:#1a1a2e;color:#fff}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.07)}
-.seat-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;padding:4px}
-.seat{width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s}
-.seat:hover{transform:scale(1.12)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07)}
+.modal-footer .btn{flex:1;justify-content:center}
+
+/* ── Seat map ── */
+.seat-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:6px}
+.seat{width:100%;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;transition:transform 0.15s}
+.seat:hover{transform:scale(1.1)}
 .seat-free{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7}
 .seat-occupied{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);color:#a78bfa}
+
+/* ── Sections ── */
 .section{display:none}
-.section.active{display:block;animation:fadeIn 0.25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.empty-state{text-align:center;padding:48px;color:rgba(255,255,255,0.2)}
-.empty-state i{font-size:44px;display:block;margin-bottom:10px;color:rgba(255,255,255,0.12)}
+.section.active{display:block;animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.empty-state{text-align:center;padding:40px 20px;color:rgba(255,255,255,0.2)}
+.empty-state i{font-size:40px;display:block;margin-bottom:8px;color:rgba(255,255,255,0.12)}
 .empty-state p{font-size:13px}
-.filter-sel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:8px 12px;font-size:13px;color:#fff;font-family:'Inter',sans-serif;outline:none}
+
+/* ── Filter select ── */
+.filter-sel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:8px 10px;font-size:13px;color:#fff;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none}
 .filter-sel option{background:#1a1a2e}
-.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* ── Avatar ── */
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* ── Progress ── */
 .progress-wrap{background:rgba(255,255,255,0.06);border-radius:20px;height:6px;overflow:hidden;margin-top:8px}
-.progress-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#7c3aed,#4f46e5)}
-.toast{position:fixed;bottom:24px;right:24px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 18px;font-size:13px;color:#fff;z-index:999;box-shadow:0 10px 30px rgba(0,0,0,0.4);display:none;align-items:center;gap:10px}
+.progress-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#7c3aed,#4f46e5);transition:width 0.4s ease}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:11px 18px;font-size:13px;color:#fff;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.4);display:none;align-items:center;gap:8px;white-space:nowrap}
 .toast.show{display:flex;animation:slideUp 0.3s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-::-webkit-scrollbar{width:5px}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ── Bottom nav (mobile) ── */
+.bottomnav{display:none;background:#1a1a2e;border-top:1px solid rgba(255,255,255,0.07);padding:8px 0 12px;position:sticky;bottom:0;z-index:30}
+.bottomnav-inner{display:flex;justify-content:space-around}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 10px;border-radius:10px;color:rgba(255,255,255,0.4);transition:color 0.2s;min-width:56px}
+.bnav-item.active{color:#a78bfa}
+.bnav-item i{font-size:20px}
+.bnav-item span{font-size:10px;font-weight:500}
+
+/* ── Dashboard grid ── */
+.dash-grid{display:grid;grid-template-columns:1fr;gap:16px}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px}
+
+/* ── DESKTOP overrides ── */
+@media(min-width:768px){
+  body{flex-direction:row}
+  .topnav{display:none!important}
+  .bottomnav{display:none!important}
+  .layout{height:100vh}
+  .sidebar{display:flex!important;position:relative;transform:none!important}
+  .topbar{display:flex}
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .dash-grid{grid-template-columns:1.3fr 1fr}
+  .modal-overlay{align-items:center}
+  .modal{border-radius:20px;max-width:460px}
+  .toast{bottom:24px}
+  .content{padding:24px 28px}
+  .search-row{margin-bottom:0}
+}
+
+/* ── MOBILE only ── */
+@media(max-width:767px){
+  .layout{flex-direction:row;height:calc(100vh - 56px)}
+  .topnav{display:flex}
+  .topbar{display:none}
+  .bottomnav{display:block}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;transform:translateX(-100%);width:260px}
+  .sidebar.open{transform:translateX(0)}
+  .content{padding:16px}
+  table{min-width:460px}
+  .form-row{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-  <div class="logo">
-    <div class="logo-icon">📚</div>
-    <h1>Wisdom Library</h1>
+<!-- Mobile top navbar -->
+<div class="topnav">
+  <div>
+    <h1>📚 Wisdom Library</h1>
     <p>Management System</p>
   </div>
-  <nav class="nav">
-    <div class="nav-label">Overview</div>
-    <div class="nav-item active" onclick="showSection('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-    <div class="nav-label">Manage</div>
-    <div class="nav-item" onclick="showSection('students',this)"><i class="ti ti-users"></i> Students</div>
-    <div class="nav-item" onclick="showSection('attendance',this)"><i class="ti ti-calendar-check"></i> Attendance</div>
-    <div class="nav-item" onclick="showSection('fees',this)"><i class="ti ti-cash"></i> Fees</div>
-    <div class="nav-label">Layout</div>
-    <div class="nav-item" onclick="showSection('seats',this)"><i class="ti ti-layout-grid"></i> Seat Map</div>
-  </nav>
-  <div class="sidebar-footer"><p>Wisdom Library © 2025</p></div>
+  <button class="hamburger" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
 </div>
 
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-left">
-      <h2 id="page-title">Dashboard</h2>
-      <p id="top-date"></p>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-icon">📚</div>
+      <h1>Wisdom Library</h1>
+      <p>Management System</p>
     </div>
-    <div class="topbar-right">
-      <div class="topbar-badge"><i class="ti ti-map-pin" style="font-size:12px;vertical-align:-1px"></i> 53 Seats</div>
-      <button class="btn btn-primary btn-sm" onclick="openAddStudent()"><i class="ti ti-plus"></i> Add Student</button>
-    </div>
+    <nav class="nav">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" onclick="showSection('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="nav-label">Manage</div>
+      <div class="nav-item" onclick="showSection('students',this)"><i class="ti ti-users"></i> Students</div>
+      <div class="nav-item" onclick="showSection('attendance',this)"><i class="ti ti-calendar-check"></i> Attendance</div>
+      <div class="nav-item" onclick="showSection('fees',this)"><i class="ti ti-cash"></i> Fees</div>
+      <div class="nav-label">Layout</div>
+      <div class="nav-item" onclick="showSection('seats',this)"><i class="ti ti-layout-grid"></i> Seat Map</div>
+    </nav>
+    <div class="sidebar-footer"><p>Wisdom Library © 2025</p></div>
   </div>
 
-  <div class="content">
-
-    <!-- DASHBOARD -->
-    <div class="section active" id="section-dashboard">
-      <div class="stats">
-        <div class="stat-card">
-          <div class="icon ic1"><i class="ti ti-armchair"></i></div>
-          <div class="value" id="stat-occupied">—</div>
-          <div class="label">Occupied Seats</div>
-          <div class="change ch-up" id="stat-free-badge">— free</div>
-        </div>
-        <div class="stat-card">
-          <div class="icon ic2"><i class="ti ti-user-check"></i></div>
-          <div class="value" id="stat-present">—</div>
-          <div class="label">Present Today</div>
-          <div class="change ch-up" id="stat-att-pct">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="icon ic3"><i class="ti ti-alert-circle"></i></div>
-          <div class="value" id="stat-pending">—</div>
-          <div class="label">Fees Pending</div>
-          <div class="change ch-dn" id="stat-pending-amt">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="icon ic4"><i class="ti ti-cash"></i></div>
-          <div class="value" id="stat-collected">—</div>
-          <div class="label">Collected This Month</div>
-          <div class="change ch-up" id="stat-paid-count">—</div>
-        </div>
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 id="page-title">Dashboard</h2>
+        <p id="top-date"></p>
       </div>
-      <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
-        <div class="card">
-          <div class="card-header"><div><h3>Recent Students</h3><div class="sub">Latest enrollments</div></div></div>
-          <table><thead><tr><th>Student</th><th>Seat</th><th>Fees</th><th>Status</th></tr></thead>
-          <tbody id="dash-students"></tbody></table>
-        </div>
-        <div class="card">
-          <div class="card-header"><div><h3>Seat Occupancy</h3></div></div>
-          <div style="text-align:center;padding:10px 0">
-            <div style="font-size:40px;font-weight:700;color:#a78bfa" id="occ-pct">0%</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px">of 53 seats occupied</div>
-            <div class="progress-wrap" style="margin-top:14px"><div class="progress-bar" id="occ-bar" style="width:0%"></div></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:18px;font-size:12px">
-            <div style="text-align:center"><div style="font-weight:600;color:#a78bfa" id="d-occ">0</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Occupied</div></div>
-            <div style="text-align:center"><div style="font-weight:600;color:#6ee7b7" id="d-free">53</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Available</div></div>
-            <div style="text-align:center"><div style="font-weight:600;color:#67e8f9" id="d-present2">0</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Present</div></div>
-            <div style="text-align:center"><div style="font-weight:600;color:#fca5a5" id="d-pending2">0</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Fee Due</div></div>
-          </div>
-        </div>
+      <div class="topbar-right">
+        <div class="topbar-badge"><i class="ti ti-map-pin" style="font-size:11px;vertical-align:-1px"></i> 53 Seats</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddStudent()"><i class="ti ti-plus"></i> Add</button>
       </div>
     </div>
 
-    <!-- STUDENTS -->
-    <div class="section" id="section-students">
-      <div class="card">
-        <div class="card-header">
-          <div><h3>All Students</h3><div class="sub" id="student-count-label">0 enrolled</div></div>
-          <div style="display:flex;gap:10px;align-items:center">
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="section active" id="section-dashboard">
+        <div class="stats">
+          <div class="stat-card"><div class="icon ic1"><i class="ti ti-armchair"></i></div><div class="value" id="stat-occupied">—</div><div class="label">Occupied Seats</div><div class="change ch-up" id="stat-free-badge">—</div></div>
+          <div class="stat-card"><div class="icon ic2"><i class="ti ti-user-check"></i></div><div class="value" id="stat-present">—</div><div class="label">Present Today</div><div class="change ch-up" id="stat-att-pct">—</div></div>
+          <div class="stat-card"><div class="icon ic3"><i class="ti ti-alert-circle"></i></div><div class="value" id="stat-pending">—</div><div class="label">Fees Pending</div><div class="change ch-dn" id="stat-pending-amt">—</div></div>
+          <div class="stat-card"><div class="icon ic4"><i class="ti ti-cash"></i></div><div class="value" id="stat-collected">—</div><div class="label">Collected</div><div class="change ch-up" id="stat-paid-count">—</div></div>
+        </div>
+        <div class="dash-grid">
+          <div class="card">
+            <div class="card-header"><div><h3>Recent Students</h3><div class="sub">Latest enrollments</div></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Student</th><th>Seat</th><th>Fees</th><th>Status</th></tr></thead><tbody id="dash-students"></tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><h3>Seat Occupancy</h3></div></div>
+            <div style="text-align:center;padding:8px 0">
+              <div style="font-size:36px;font-weight:700;color:#a78bfa" id="occ-pct">0%</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px">of 53 seats occupied</div>
+              <div class="progress-wrap" style="margin-top:12px"><div class="progress-bar" id="occ-bar" style="width:0%"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-around;margin-top:16px;font-size:12px">
+              <div style="text-align:center"><div style="font-weight:600;color:#a78bfa" id="d-occ">0</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Occupied</div></div>
+              <div style="text-align:center"><div style="font-weight:600;color:#6ee7b7" id="d-free">53</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Free</div></div>
+              <div style="text-align:center"><div style="font-weight:600;color:#67e8f9" id="d-present2">0</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Present</div></div>
+              <div style="text-align:center"><div style="font-weight:600;color:#fca5a5" id="d-pending2">0</div><div style="color:rgba(255,255,255,0.35);margin-top:2px">Due</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="section" id="section-students">
+        <div class="card">
+          <div class="card-header">
+            <div><h3>All Students</h3><div class="sub" id="student-count-label">0 enrolled</div></div>
+            <button class="btn btn-primary btn-sm" onclick="openAddStudent()"><i class="ti ti-plus"></i> Add</button>
+          </div>
+          <div class="search-row">
             <div class="search-wrap"><i class="ti ti-search"></i><input class="search-bar" placeholder="Search name or seat..." oninput="filterStudents(this.value)"></div>
-            <button class="btn btn-primary" onclick="openAddStudent()"><i class="ti ti-plus"></i> Add Student</button>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Student</th><th>Seat</th><th>Plan</th><th>Fee</th><th></th></tr></thead><tbody id="students-table"></tbody></table></div>
+          <div class="empty-state" id="no-students" style="display:none"><i class="ti ti-users"></i><p>No students yet.</p></div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="section" id="section-attendance">
+        <div class="card">
+          <div class="card-header">
+            <div><h3>Today's Attendance</h3><div class="sub" id="att-summary-label">—</div></div>
+            <div class="card-actions">
+              <button class="btn btn-success btn-sm" onclick="markAll('present')"><i class="ti ti-check"></i> All Present</button>
+              <button class="btn btn-danger btn-sm" onclick="markAll('absent')"><i class="ti ti-x"></i> All Absent</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Student</th><th>Seat</th><th>Status</th><th>Action</th></tr></thead><tbody id="attendance-table"></tbody></table></div>
+          <div class="empty-state" id="no-attendance" style="display:none"><i class="ti ti-calendar"></i><p>No students enrolled.</p></div>
+        </div>
+      </div>
+
+      <!-- FEES -->
+      <div class="section" id="section-fees">
+        <div class="card">
+          <div class="card-header">
+            <div><h3>Fees Management</h3><div class="sub" id="fees-summary-label">—</div></div>
+            <select class="filter-sel" id="fees-filter" onchange="renderFees()">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Student</th><th>Seat</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="fees-table"></tbody></table></div>
+          <div class="empty-state" id="no-fees" style="display:none"><i class="ti ti-cash"></i><p>No records found.</p></div>
+        </div>
+      </div>
+
+      <!-- SEATS -->
+      <div class="section" id="section-seats">
+        <div class="card">
+          <div class="card-header">
+            <div><h3>Seat Map</h3><div class="sub">53 total seats</div></div>
+            <div style="display:flex;gap:12px;font-size:11px;color:rgba(255,255,255,0.5);align-items:center">
+              <span><span style="display:inline-block;width:9px;height:9px;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);border-radius:2px;vertical-align:middle;margin-right:4px"></span>Free</span>
+              <span><span style="display:inline-block;width:9px;height:9px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:2px;vertical-align:middle;margin-right:4px"></span>Taken</span>
+            </div>
+          </div>
+          <div class="seat-grid" id="seat-grid"></div>
+          <div style="margin-top:14px;display:flex;gap:16px;font-size:12px;color:rgba(255,255,255,0.4);padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)">
+            <span id="seats-occ-label">0 occupied</span><span id="seats-free-label">53 free</span>
           </div>
         </div>
-        <table><thead><tr><th>Student</th><th>Seat</th><th>Contact</th><th>Plan</th><th>Monthly Fee</th><th>Joined</th><th></th></tr></thead>
-        <tbody id="students-table"></tbody></table>
-        <div class="empty-state" id="no-students" style="display:none"><i class="ti ti-users"></i><p>No students yet. Click "Add Student" to begin.</p></div>
       </div>
-    </div>
 
-    <!-- ATTENDANCE -->
-    <div class="section" id="section-attendance">
-      <div class="card">
-        <div class="card-header">
-          <div><h3>Today's Attendance</h3><div class="sub" id="att-summary-label">—</div></div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-success btn-sm" onclick="markAll('present')"><i class="ti ti-check"></i> All Present</button>
-            <button class="btn btn-danger btn-sm" onclick="markAll('absent')"><i class="ti ti-x"></i> All Absent</button>
-          </div>
-        </div>
-        <table><thead><tr><th>Student</th><th>Seat</th><th>Shift</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="attendance-table"></tbody></table>
-        <div class="empty-state" id="no-attendance" style="display:none"><i class="ti ti-calendar"></i><p>No students enrolled.</p></div>
-      </div>
-    </div>
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end layout -->
 
-    <!-- FEES -->
-    <div class="section" id="section-fees">
-      <div class="card">
-        <div class="card-header">
-          <div><h3>Fees Management</h3><div class="sub" id="fees-summary-label">—</div></div>
-          <select class="filter-sel" id="fees-filter" onchange="renderFees()">
-            <option value="all">All Students</option>
-            <option value="pending">Pending Only</option>
-            <option value="paid">Paid Only</option>
-          </select>
-        </div>
-        <table><thead><tr><th>Student</th><th>Seat</th><th>Plan</th><th>Amount</th><th>Month</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="fees-table"></tbody></table>
-        <div class="empty-state" id="no-fees" style="display:none"><i class="ti ti-cash"></i><p>No records found.</p></div>
-      </div>
-    </div>
-
-    <!-- SEATS -->
-    <div class="section" id="section-seats">
-      <div class="card">
-        <div class="card-header">
-          <div><h3>Seat Map</h3><div class="sub">Hover a seat to see student name</div></div>
-          <div style="display:flex;gap:16px;font-size:12px;color:rgba(255,255,255,0.5)">
-            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);border-radius:3px;vertical-align:middle;margin-right:5px"></span>Free</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:3px;vertical-align:middle;margin-right:5px"></span>Occupied</span>
-          </div>
-        </div>
-        <div class="seat-grid" id="seat-grid"></div>
-        <div style="margin-top:16px;display:flex;gap:20px;font-size:12px;color:rgba(255,255,255,0.4);padding-top:14px;border-top:1px solid rgba(255,255,255,0.06)">
-          <span id="seats-occ-label">0 occupied</span><span id="seats-free-label">53 free</span>
-        </div>
-      </div>
-    </div>
-
+<!-- Bottom nav (mobile) -->
+<div class="bottomnav">
+  <div class="bottomnav-inner">
+    <div class="bnav-item active" id="bn-dashboard" onclick="showSection('dashboard',null,'bn-dashboard')"><i class="ti ti-layout-dashboard"></i><span>Home</span></div>
+    <div class="bnav-item" id="bn-students" onclick="showSection('students',null,'bn-students')"><i class="ti ti-users"></i><span>Students</span></div>
+    <div class="bnav-item" id="bn-attendance" onclick="showSection('attendance',null,'bn-attendance')"><i class="ti ti-calendar-check"></i><span>Attendance</span></div>
+    <div class="bnav-item" id="bn-fees" onclick="showSection('fees',null,'bn-fees')"><i class="ti ti-cash"></i><span>Fees</span></div>
+    <div class="bnav-item" id="bn-seats" onclick="showSection('seats',null,'bn-seats')"><i class="ti ti-layout-grid"></i><span>Seats</span></div>
   </div>
 </div>
 
 <!-- STUDENT MODAL -->
 <div class="modal-overlay" id="student-modal">
   <div class="modal">
+    <div class="modal-handle"></div>
     <h3 id="modal-title">Add New Student</h3>
     <div class="form-row">
       <div class="form-group"><label>Full Name *</label><input id="f-name" placeholder="Enter full name"></div>
-      <div class="form-group"><label>Phone Number</label><input id="f-phone" placeholder="+91 XXXXX XXXXX"></div>
+      <div class="form-group"><label>Phone</label><input id="f-phone" placeholder="+91 XXXXX XXXXX"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Seat Number *</label><select id="f-seat"></select></div>
+      <div class="form-group"><label>Seat *</label><select id="f-seat"></select></div>
       <div class="form-group"><label>Shift</label>
         <select id="f-shift"><option>Morning (6am–12pm)</option><option>Afternoon (12pm–6pm)</option><option>Evening (6pm–10pm)</option><option>Full Day</option></select>
       </div>
@@ -287,16 +379,17 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     <div class="form-group"><label>Note</label><input id="f-note" placeholder="Optional"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveStudent()"><i class="ti ti-check"></i> Save Student</button>
+      <button class="btn btn-primary" onclick="saveStudent()"><i class="ti ti-check"></i> Save</button>
     </div>
   </div>
 </div>
 
 <!-- DELETE CONFIRM -->
 <div class="modal-overlay" id="confirm-modal">
-  <div class="modal" style="width:360px">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-handle"></div>
     <h3>Remove Student?</h3>
-    <p style="font-size:13px;color:rgba(255,255,255,0.45);margin:10px 0 6px;line-height:1.6">This permanently deletes the student and frees their seat.</p>
+    <p style="font-size:13px;color:rgba(255,255,255,0.45);margin:8px 0;line-height:1.6">This permanently deletes the student and frees their seat.</p>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
       <button class="btn btn-danger" onclick="confirmDelete()"><i class="ti ti-trash"></i> Delete</button>
@@ -308,51 +401,48 @@ tr:hover td{background:rgba(255,255,255,0.03)}
 <div class="toast" id="toast"><i class="ti ti-check" style="color:#6ee7b7"></i><span id="toast-msg"></span></div>
 
 <script>
-// ── Auto-detects local vs production ──
-const API = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
+const API = window.location.hostname==='localhost' ? 'http://localhost:5000/api' : '/api';
+const TOTAL=53;
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const today=new Date();
+const todayKey=today.toISOString().slice(0,10);
+const monthKey=`${today.getFullYear()}-${today.getMonth()+1}`;
+const monthLabel=`${MONTHS[today.getMonth()]} ${today.getFullYear()}`;
+let students=[],attendance={},fees={},deleteTarget=null,editTarget=null,studentFilter='';
 
-const TOTAL = 53;
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const today = new Date();
-const todayKey = today.toISOString().slice(0,10);
-const monthKey = `${today.getFullYear()}-${today.getMonth()+1}`;
-const monthLabel = `${MONTHS[today.getMonth()]} ${today.getFullYear()}`;
-
-let students = [], attendance = {}, fees = {}, deleteTarget = null, editTarget = null, studentFilter = '';
-
-document.getElementById('top-date').textContent = today.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const dateEl=document.getElementById('top-date');
+if(dateEl) dateEl.textContent=today.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
 
-function toast(msg, isErr=false){
+function toast(msg,isErr=false){
   const t=document.getElementById('toast');
-  const icon=t.querySelector('i');
-  icon.className=isErr?'ti ti-alert-circle':'ti ti-check';
-  icon.style.color=isErr?'#fca5a5':'#6ee7b7';
+  t.querySelector('i').className=isErr?'ti ti-alert-circle':'ti ti-check';
+  t.querySelector('i').style.color=isErr?'#fca5a5':'#6ee7b7';
   document.getElementById('toast-msg').textContent=msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-async function api(path, method='GET', body=null){
+async function api(path,method='GET',body=null){
   const opts={method,headers:{'Content-Type':'application/json'}};
   if(body) opts.body=JSON.stringify(body);
   const r=await fetch(API+path,opts);
   const data=await r.json();
-  if(!r.ok) throw new Error(data.error||'Request failed');
+  if(!r.ok) throw new Error(data.error||'Failed');
   return data;
 }
 
 async function loadAll(){
   try{
-    [students, attendance, fees] = await Promise.all([
+    [students,attendance,fees]=await Promise.all([
       api('/students'),
       api(`/attendance/${todayKey}`),
       api(`/fees?month=${monthKey}`)
     ]);
     await loadStats();
     render();
-  }catch(e){toast('Cannot connect to server. Is Flask running?',true);}
+  }catch(e){toast('Cannot connect to server',true);}
 }
 
 async function loadStats(){
@@ -361,9 +451,9 @@ async function loadStats(){
     const pct=s.total_students?Math.round(s.present_today/s.total_students*100):0;
     const occPct=Math.round(s.total_students/TOTAL*100);
     document.getElementById('stat-occupied').textContent=s.total_students;
-    document.getElementById('stat-free-badge').textContent=`${s.free_seats} seats free`;
+    document.getElementById('stat-free-badge').textContent=`${s.free_seats} free`;
     document.getElementById('stat-present').textContent=s.present_today;
-    document.getElementById('stat-att-pct').textContent=`${pct}% attendance`;
+    document.getElementById('stat-att-pct').textContent=`${pct}% rate`;
     document.getElementById('stat-pending').textContent=s.fees_pending_count;
     document.getElementById('stat-pending-amt').textContent=`₹${s.fees_pending_amt} due`;
     document.getElementById('stat-collected').textContent=`₹${s.fees_collected}`;
@@ -382,11 +472,11 @@ function render(){renderDash();renderStudents();renderAttendance();renderFees();
 function renderDash(){
   const recent=[...students].slice(-5).reverse();
   document.getElementById('dash-students').innerHTML=recent.length?recent.map(s=>`<tr>
-    <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${initials(s.name)}</div><div class="td-name">${s.name}</div></div></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${initials(s.name)}</div><div class="td-name">${s.name}</div></div></td>
     <td><span class="badge badge-purple">Seat ${s.seat}</span></td>
     <td>₹${s.fees}</td>
-    <td><span class="badge ${fees[s.id]==='paid'?'badge-green':'badge-red'}">${fees[s.id]==='paid'?'Paid':'Pending'}</span></td>
-  </tr>`).join(''):'<tr><td colspan="4" style="text-align:center;padding:24px;color:rgba(255,255,255,0.2)">No students yet</td></tr>';
+    <td><span class="badge ${fees[s.id]==='paid'?'badge-green':'badge-red'}">${fees[s.id]==='paid'?'Paid':'Due'}</span></td>
+  </tr>`).join(''):'<tr><td colspan="4" style="text-align:center;padding:20px;color:rgba(255,255,255,0.2)">No students yet</td></tr>';
 }
 
 function renderStudents(){
@@ -394,13 +484,11 @@ function renderStudents(){
   document.getElementById('student-count-label').textContent=`${students.length} enrolled`;
   document.getElementById('no-students').style.display=f.length?'none':'block';
   document.getElementById('students-table').innerHTML=f.map(s=>`<tr>
-    <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${initials(s.name)}</div><div><div class="td-name">${s.name}</div><div class="td-sub">${s.shift}</div></div></div></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${initials(s.name)}</div><div><div class="td-name">${s.name}</div><div class="td-sub">${s.shift}</div></div></div></td>
     <td><span class="badge badge-purple">Seat ${s.seat}</span></td>
-    <td style="font-size:12px;color:rgba(255,255,255,0.55)">${s.phone||'—'}</td>
-    <td><span class="badge badge-blue">${s.plan}</span></td>
+    <td><span class="badge badge-blue" style="font-size:10px">${s.plan}</span></td>
     <td style="font-weight:600;color:#a78bfa">₹${s.fees}</td>
-    <td style="font-size:12px;color:rgba(255,255,255,0.35)">${s.joined}</td>
-    <td><div style="display:flex;gap:6px">
+    <td><div style="display:flex;gap:5px">
       <button class="btn btn-ghost btn-sm" onclick="openEdit(${s.id})"><i class="ti ti-edit"></i></button>
       <button class="btn btn-danger btn-sm" onclick="openDelete(${s.id})"><i class="ti ti-trash"></i></button>
     </div></td>
@@ -411,28 +499,27 @@ function filterStudents(v){studentFilter=v.toLowerCase();renderStudents();}
 
 function renderAttendance(){
   const present=students.filter(s=>attendance[s.id]==='present').length;
-  document.getElementById('att-summary-label').textContent=students.length?`${present} of ${students.length} present today`:'No students enrolled';
+  document.getElementById('att-summary-label').textContent=students.length?`${present} of ${students.length} present`:'No students';
   document.getElementById('no-attendance').style.display=students.length?'none':'block';
   document.getElementById('attendance-table').innerHTML=students.map(s=>{
     const st=attendance[s.id]||'absent';
     return`<tr>
-      <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${initials(s.name)}</div><div class="td-name">${s.name}</div></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${initials(s.name)}</div><div class="td-name">${s.name}</div></div></td>
       <td><span class="badge badge-purple">Seat ${s.seat}</span></td>
-      <td style="font-size:12px;color:rgba(255,255,255,0.45)">${s.shift}</td>
-      <td><span class="badge ${st==='present'?'badge-green':'badge-red'}">${st==='present'?'✓ Present':'✗ Absent'}</span></td>
+      <td><span class="badge ${st==='present'?'badge-green':'badge-red'}">${st==='present'?'✓':'✗'}</span></td>
       <td><button class="btn btn-sm ${st==='present'?'btn-danger':'btn-success'}" onclick="toggleAtt(${s.id})">
-        ${st==='present'?'Mark Absent':'Mark Present'}</button></td>
+        ${st==='present'?'Absent':'Present'}</button></td>
     </tr>`;
   }).join('');
 }
 
 async function toggleAtt(id){
-  const newStatus=attendance[id]==='present'?'absent':'present';
+  const ns=attendance[id]==='present'?'absent':'present';
   try{
-    await api('/attendance','POST',{student_id:id,date:todayKey,status:newStatus});
-    attendance[id]=newStatus;
-    renderAttendance();renderDash();loadStats();
-  }catch(e){toast('Failed to update attendance',true);}
+    await api('/attendance','POST',{student_id:id,date:todayKey,status:ns});
+    attendance[id]=ns;
+    renderAttendance();loadStats();
+  }catch(e){toast('Failed',true);}
 }
 
 async function markAll(status){
@@ -441,7 +528,7 @@ async function markAll(status){
     await api('/attendance/bulk','POST',{student_ids:ids,date:todayKey,status});
     ids.forEach(id=>attendance[id]=status);
     renderAttendance();loadStats();
-    toast(`All students marked ${status}`);
+    toast(`All marked ${status}`);
   }catch(e){toast('Failed',true);}
 }
 
@@ -450,20 +537,18 @@ function renderFees(){
   let list=students;
   if(f==='pending')list=students.filter(s=>fees[s.id]!=='paid');
   if(f==='paid')list=students.filter(s=>fees[s.id]==='paid');
-  const paidCount=students.filter(s=>fees[s.id]==='paid').length;
-  document.getElementById('fees-summary-label').textContent=`${paidCount} of ${students.length} paid for ${monthLabel}`;
+  const paid=students.filter(s=>fees[s.id]==='paid').length;
+  document.getElementById('fees-summary-label').textContent=`${paid}/${students.length} paid · ${monthLabel}`;
   document.getElementById('no-fees').style.display=list.length?'none':'block';
   document.getElementById('fees-table').innerHTML=list.map(s=>{
     const st=fees[s.id]==='paid'?'paid':'pending';
     return`<tr>
-      <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${initials(s.name)}</div><div class="td-name">${s.name}</div></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${initials(s.name)}</div><div class="td-name">${s.name}</div></div></td>
       <td><span class="badge badge-purple">Seat ${s.seat}</span></td>
-      <td><span class="badge badge-blue">${s.plan}</span></td>
       <td style="font-weight:600;color:#a78bfa">₹${s.fees}</td>
-      <td style="font-size:12px;color:rgba(255,255,255,0.45)">${monthLabel}</td>
-      <td><span class="badge ${st==='paid'?'badge-green':'badge-red'}">${st==='paid'?'✓ Paid':'⚠ Pending'}</span></td>
+      <td><span class="badge ${st==='paid'?'badge-green':'badge-red'}">${st==='paid'?'Paid':'Due'}</span></td>
       <td>${st==='pending'
-        ?`<button class="btn btn-success btn-sm" onclick="updateFee(${s.id},'paid')"><i class="ti ti-check"></i> Mark Paid</button>`
+        ?`<button class="btn btn-success btn-sm" onclick="updateFee(${s.id},'paid')"><i class="ti ti-check"></i> Paid</button>`
         :`<button class="btn btn-warning btn-sm" onclick="updateFee(${s.id},'pending')"><i class="ti ti-rotate"></i> Undo</button>`}
       </td>
     </tr>`;
@@ -474,8 +559,8 @@ async function updateFee(id,status){
   try{
     await api('/fees','POST',{student_id:id,month:monthKey,status});
     fees[id]=status;
-    renderFees();renderDash();loadStats();
-    toast(status==='paid'?'Fee marked as paid':'Fee marked as pending');
+    renderFees();loadStats();
+    toast(status==='paid'?'Fee marked paid':'Marked pending');
   }catch(e){toast('Failed',true);}
 }
 
@@ -488,16 +573,16 @@ function renderSeats(){
     d.className=`seat ${occ.has(i)?'seat-occupied':'seat-free'}`;
     d.textContent=i;
     const s=students.find(x=>x.seat===i);
-    d.title=s?`Seat ${i}: ${s.name}`:`Seat ${i}: Free`;
+    d.title=s?`${s.name}`:`Free`;
     grid.appendChild(d);
   }
   document.getElementById('seats-occ-label').textContent=`${occ.size} occupied`;
   document.getElementById('seats-free-label').textContent=`${TOTAL-occ.size} free`;
 }
 
-function getAvailableSeats(excludeSeat=null){
+function getAvailableSeats(excSeat=null){
   const occ=new Set(students.map(s=>s.seat));
-  if(excludeSeat) occ.delete(excludeSeat);
+  if(excSeat) occ.delete(excSeat);
   return Array.from({length:TOTAL},(_,i)=>i+1).filter(n=>!occ.has(n));
 }
 
@@ -505,8 +590,7 @@ function openAddStudent(){
   editTarget=null;
   document.getElementById('modal-title').textContent='Add New Student';
   ['f-name','f-phone','f-fees','f-note'].forEach(id=>document.getElementById(id).value='');
-  const sel=document.getElementById('f-seat');
-  sel.innerHTML=getAvailableSeats().map(n=>`<option value="${n}">Seat ${n}</option>`).join('');
+  document.getElementById('f-seat').innerHTML=getAvailableSeats().map(n=>`<option value="${n}">Seat ${n}</option>`).join('');
   document.getElementById('student-modal').classList.add('show');
 }
 
@@ -518,8 +602,7 @@ function openEdit(id){
   document.getElementById('f-phone').value=s.phone||'';
   document.getElementById('f-fees').value=s.fees;
   document.getElementById('f-note').value=s.note||'';
-  const avail=getAvailableSeats(s.seat);
-  avail.unshift(s.seat);
+  const avail=[s.seat,...getAvailableSeats(s.seat)];
   document.getElementById('f-seat').innerHTML=[...new Set(avail)].map(n=>`<option value="${n}" ${n===s.seat?'selected':''}>${n===s.seat?'Seat '+n+' (current)':'Seat '+n}</option>`).join('');
   document.getElementById('f-shift').value=s.shift;
   document.getElementById('f-plan').value=s.plan;
@@ -532,9 +615,9 @@ async function saveStudent(){
   const name=document.getElementById('f-name').value.trim();
   const seat=parseInt(document.getElementById('f-seat').value);
   const fees_amt=parseFloat(document.getElementById('f-fees').value);
-  if(!name){alert('Please enter student name');return;}
-  if(!seat){alert('Please select a seat');return;}
-  if(!fees_amt){alert('Please enter fees amount');return;}
+  if(!name){alert('Enter student name');return;}
+  if(!seat){alert('Select a seat');return;}
+  if(!fees_amt){alert('Enter fees amount');return;}
   const body={name,seat,fees:fees_amt,
     phone:document.getElementById('f-phone').value,
     shift:document.getElementById('f-shift').value,
@@ -542,14 +625,12 @@ async function saveStudent(){
     note:document.getElementById('f-note').value};
   try{
     if(editTarget){
-      const updated=await api(`/students/${editTarget}`,'PUT',body);
-      const idx=students.findIndex(s=>s.id===editTarget);
-      students[idx]=updated;
+      const u=await api(`/students/${editTarget}`,'PUT',body);
+      students[students.findIndex(s=>s.id===editTarget)]=u;
       toast('Student updated');
     }else{
-      const added=await api('/students','POST',body);
-      students.push(added);
-      toast('Student added successfully');
+      students.push(await api('/students','POST',body));
+      toast('Student added');
     }
     render();loadStats();closeModal();
   }catch(e){toast(e.message,true);}
@@ -563,17 +644,34 @@ async function confirmDelete(){
     await api(`/students/${deleteTarget}`,'DELETE');
     students=students.filter(s=>s.id!==deleteTarget);
     render();loadStats();toast('Student removed');
-  }catch(e){toast('Failed to delete',true);}
+  }catch(e){toast('Failed',true);}
   closeConfirm();
 }
 
-function showSection(name,el){
+function showSection(name, sidebarEl, bnId){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('section-'+name).classList.add('active');
-  el.classList.add('active');
-  const titles={dashboard:'Dashboard',students:'Students',attendance:'Attendance',fees:'Fees Management',seats:'Seat Map'};
-  document.getElementById('page-title').textContent=titles[name];
+  // sidebar nav
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(sidebarEl) sidebarEl.classList.add('active');
+  // bottom nav
+  document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
+  const bn=bnId?document.getElementById(bnId):document.getElementById('bn-'+name);
+  if(bn) bn.classList.add('active');
+  // page title
+  const titles={dashboard:'Dashboard',students:'Students',attendance:'Attendance',fees:'Fees',seats:'Seat Map'};
+  const pt=document.getElementById('page-title');
+  if(pt) pt.textContent=titles[name];
+  closeSidebar();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
 }
 
 loadAll();
